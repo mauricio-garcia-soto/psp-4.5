@@ -9,6 +9,7 @@ public class Contacto {
         this.nombre = nombre;
         this.telefono = telefono;
     }
+    public Contacto() {}
 
     public Long getId() {
         return id;

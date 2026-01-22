@@ -1,7 +1,7 @@
 package agenda.agenda;
 
 import agenda.agenda.entidades.Contacto;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.*;
 import org.springframework.web.client.RestTemplate;
 
 public class ClientePrueba {
@@ -24,10 +24,14 @@ public class ClientePrueba {
         listarContactos();
 // Obtiene un contacto por ID
         obtenerContactoPorId(nuevoContacto.getId());
+        // Modificar contacto
+        modificarContacto(nuevoContacto.getId(),nuevoContacto);
       //  Elimina un contacto por ID
         eliminarContacto(nuevoContacto.getId());
 // Obtiene todos los contactos después de la eliminación
         listarContactos();
+
+
     }
     private Contacto agregarContacto(Contacto contacto) {
         RestTemplate restTemplate = new RestTemplate();
@@ -55,5 +59,17 @@ public class ClientePrueba {
         RestTemplate restTemplate = new RestTemplate();
         restTemplate.delete(BASE_URL + "/" + id);
         System.out.println("Contacto eliminado con ID: " + id);
+    }
+    private Contacto modificarContacto(Long id, Contacto contacto)
+    {
+        RestTemplate restTemplate = new RestTemplate();
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        HttpEntity<Contacto> requestEntity = new
+                HttpEntity<>(contacto, headers);
+        ResponseEntity<Contacto> response =
+                restTemplate.exchange(BASE_URL + "/" + id, HttpMethod.PUT,
+                        requestEntity, Contacto.class);
+        return response.getBody();
     }
 }
