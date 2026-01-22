@@ -70,6 +70,7 @@ public class ClientePrueba {
         ResponseEntity<Contacto> response =
                 restTemplate.exchange(BASE_URL + "/" + id, HttpMethod.PUT,
                         requestEntity, Contacto.class);
+        System.out.println("Contacto actualizado con ID: " + id+"con el numero"+contacto.getTelefono());
         return response.getBody();
     }
 }
