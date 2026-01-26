@@ -17,7 +17,7 @@ public class ContactoRepositoryImpl implements ContactoRepository {
 
     public ContactoRepositoryImpl() {
 // Inicializa el mapa con un contacto predeterminado
-        Contacto contactoInicial = new Contacto("Aitor", "123456789");
+        Contacto contactoInicial = new Contacto("Aitor", 123456789);
         contactoInicial.setId(idSecuencia++);
         contactos.put(contactoInicial.getId(), contactoInicial);
     }
@@ -48,6 +48,10 @@ public class ContactoRepositoryImpl implements ContactoRepository {
 
     @Override
     public Contacto actualizar(Contacto contacto) {
-        return contactos.put(contacto.getId(), contacto);
+        if (contactos.containsKey(contacto.getId())) {
+            contactos.put(contacto.getId(), contacto);
+            return contacto;
+        }
+        return null;
     }
 }

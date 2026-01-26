@@ -3,9 +3,9 @@ package agenda.agenda.entidades;
 public class Contacto {
     private Long id;
     private String nombre;
-    private String telefono;
+    private int telefono;
 
-    public Contacto(String nombre, String telefono) {
+    public Contacto(String nombre, int telefono) {
         this.nombre = nombre;
         this.telefono = telefono;
     }
@@ -27,11 +27,11 @@ public class Contacto {
         this.nombre = nombre;
     }
 
-    public String getTelefono() {
+    public int getTelefono() {
         return telefono;
     }
 
-    public void setTelefono(String telefono) {
+    public void setTelefono(int telefono) {
         this.telefono = telefono;
     }
 
@@ -43,4 +43,5 @@ public class Contacto {
                 ", telefono='" + telefono + '\'' +
                 '}';
     }
+
 }

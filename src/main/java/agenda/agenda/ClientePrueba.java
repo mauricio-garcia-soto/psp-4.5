@@ -10,7 +10,7 @@ public class ClientePrueba {
 
     public static void main(String[] args) {
 // Crea un nuevo contacto para agregar
-        Contacto nuevoContacto = new Contacto("Juan", "987654321");
+        Contacto nuevoContacto = new Contacto("Juan", 987654321);
 // Ejecuta el cliente de prueba
         ClientePrueba cliente = new ClientePrueba();
         cliente.realizarPruebas(nuevoContacto);
@@ -22,10 +22,11 @@ public class ClientePrueba {
         System.out.println("Contacto agregado: " + nuevoContacto);
 // Obtiene todos los contactos
         listarContactos();
+// Modificar contacto
+        modificarContacto(nuevoContacto.getId(),nuevoContacto,435645681);
 // Obtiene un contacto por ID
         obtenerContactoPorId(nuevoContacto.getId());
-        // Modificar contacto
-        modificarContacto(nuevoContacto.getId(),nuevoContacto);
+
       //  Elimina un contacto por ID
         eliminarContacto(nuevoContacto.getId());
 // Obtiene todos los contactos después de la eliminación
@@ -60,8 +61,8 @@ public class ClientePrueba {
         restTemplate.delete(BASE_URL + "/" + id);
         System.out.println("Contacto eliminado con ID: " + id);
     }
-    private Contacto modificarContacto(Long id, Contacto contacto)
-    {
+    private Contacto modificarContacto(Long id, Contacto contacto,int numero) {
+        contacto.setTelefono(numero);
         RestTemplate restTemplate = new RestTemplate();
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);

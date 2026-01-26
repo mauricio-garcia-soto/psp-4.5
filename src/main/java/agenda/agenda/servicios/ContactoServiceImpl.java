@@ -34,6 +34,11 @@ public class ContactoServiceImpl implements ContactoService {
 
     @Override
     public Contacto actualizar(Contacto contacto) {
-        return contactoRepository.actualizar(contacto);
+       Contacto c1=contactoRepository.obtenerPorId(contacto.getId());
+       if(c1!=null){
+           return contactoRepository.actualizar(contacto);
+       }else {
+           throw new RuntimeException("Contacto no encontrado");
+       }
     }
 }
