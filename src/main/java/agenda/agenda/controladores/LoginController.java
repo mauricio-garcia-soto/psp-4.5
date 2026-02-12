@@ -2,7 +2,11 @@ package agenda.agenda.controladores;
 
 import agenda.agenda.seguridad.Constans;
 import agenda.agenda.seguridad.JWTAuthenticationConfig;
+import org.apache.coyote.BadRequestException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 public class LoginController {
