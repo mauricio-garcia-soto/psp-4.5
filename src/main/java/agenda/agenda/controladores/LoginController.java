@@ -1,5 +1,8 @@
 package agenda.agenda.controladores;
 
+import agenda.agenda.entidades.PasswordEncryptor;
+import agenda.agenda.entidades.Usuario;
+import agenda.agenda.repositorios.UsuarioRepository;
 import agenda.agenda.seguridad.Constans;
 import agenda.agenda.seguridad.JWTAuthenticationConfig;
 import org.apache.coyote.BadRequestException;
@@ -8,21 +11,33 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.List;
 @RestController
 public class LoginController {
     @Autowired
     JWTAuthenticationConfig jwtAuthtenticationConfig;
+    @Autowired
+    UsuarioRepository usuarioRepository;
     @PostMapping("login")
     public String login(
             @RequestParam("user") String username,
             @RequestParam("encryptedPass") String encryptedPass)
             throws BadRequestException {
-        if(! (username.equals(Constans.USER) &&
-                encryptedPass.equals(Constans.PASS))){
+        List<Usuario> usuarios = usuarioRepository.getUsuarios();
+        Usuario usuarioEncontrado = null;
+        for (Usuario usuario : usuarios) {
+            if (usuario.getUsername().equals(username) &&
+                    PasswordEncryptor.decrypt(usuario.getEncryptedPass()).equals(encryptedPass)) {
+                usuarioEncontrado = usuario;
+                break;
+            }
+        }
+        if (usuarioEncontrado == null) {
             throw new BadRequestException();
         }
         String token =
-                jwtAuthtenticationConfig.getJWTToken(username);
+                jwtAuthtenticationConfig.getJWTToken(usuarioEncontrado.getUsername()
+                        ,usuarioEncontrado.getRol());
         return token;
     }
 }

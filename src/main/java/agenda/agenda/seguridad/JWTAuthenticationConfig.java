@@ -1,5 +1,6 @@
 package agenda.agenda.seguridad;
 
+import agenda.agenda.entidades.Usuario;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import org.springframework.context.annotation.Configuration;
@@ -12,16 +13,23 @@ import static agenda.agenda.seguridad.Constans.*;
 
 @Configuration
 public class JWTAuthenticationConfig {
-    public String getJWTToken(String username) {
-        List<GrantedAuthority> grantedAuthorities = AuthorityUtils.commaSeparatedStringToAuthorityList("ROLE_USER");
-        String token = Jwts.builder()
+    public String getJWTToken(String username, Usuario.Rol rol) {
+        List<GrantedAuthority> grantedAuthorities = AuthorityUtils
+                .commaSeparatedStringToAuthorityList("ROLE_" +
+                        rol.toString());
+        String token = Jwts
+                .builder()
                 .setId("espinozajgeJWT")
                 .setSubject(username)
-                .claim("authorities", grantedAuthorities.stream().map(GrantedAuthority::getAuthority).collect(Collectors.toList()))
+                .claim("authorities",
+                        grantedAuthorities.stream()
+                                .map(GrantedAuthority::getAuthority)
+                                .collect(Collectors.toList()))
                 .setIssuedAt(new Date(System.currentTimeMillis()))
-                .setExpiration(new Date(System.currentTimeMillis() + TOKEN_EXPIRATION_TIME))
-                .signWith(getSigningKey(SUPER_SECRET_KEY), SignatureAlgorithm.HS512)
-                .compact();
-        return TOKEN_BEARER_PREFIX + token;
+                .setExpiration(new Date(System.currentTimeMillis() +
+                        TOKEN_EXPIRATION_TIME))
+                .signWith(getSigningKey(SUPER_SECRET_KEY),
+                        SignatureAlgorithm.HS512).compact();
+        return "Bearer " + token;
     }
 }
