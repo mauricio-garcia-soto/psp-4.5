@@ -10,25 +10,44 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
 @EnableWebSecurity
 @Configuration
-class WebSecurityConfig{
+class WebSecurityConfig {
+
     @Autowired
     JWTAuthorizationFilter jwtAuthorizationFilter;
+
     @Bean
-    public SecurityFilterChain configure(HttpSecurity http) throws
-            Exception {
+    public SecurityFilterChain configure(HttpSecurity http) throws Exception {
         http
                 .csrf(AbstractHttpConfigurer::disable)
-                .authorizeHttpRequests( authz -> authz
-                        .requestMatchers(HttpMethod.POST,Constans.LOGIN_URL).permitAll()
-                        .requestMatchers(HttpMethod.DELETE,
-                                "/contactos/**").hasAuthority("ROLE_" + Usuario.Rol.ADMIN)
-                        .anyRequest().authenticated())
+                .authorizeHttpRequests(authz -> authz
+                        // Login accesible para todos
+                        .requestMatchers(HttpMethod.POST, Constans.LOGIN_URL).permitAll()
+
+                        // DELETE: solo ADMIN
+                        .requestMatchers(HttpMethod.DELETE, "/contactos/**")
+                        .hasAuthority("ROLE_" + Usuario.Rol.ADMIN)
+
+                        // POST: ADMIN y USER (VIEWER denegado)
+                        .requestMatchers(HttpMethod.POST, "/contactos/**")
+                        .hasAnyAuthority(
+                                "ROLE_" + Usuario.Rol.ADMIN,
+                                "ROLE_" + Usuario.Rol.USER)
+
+                        // PUT: ADMIN y USER (VIEWER denegado)
+                        .requestMatchers(HttpMethod.PUT, "/contactos/**")
+                        .hasAnyAuthority(
+                                "ROLE_" + Usuario.Rol.ADMIN,
+                                "ROLE_" + Usuario.Rol.USER)
+
+                        // GET y cualquier otra cosa: cualquier usuario autenticado
+                        .anyRequest().authenticated()
+                )
                 .addFilterAfter(jwtAuthorizationFilter,
                         UsernamePasswordAuthenticationFilter.class);
+
         return http.build();
     }
 }
